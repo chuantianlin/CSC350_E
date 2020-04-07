@@ -1,2 +1,2 @@
 # CSC350_E
-Group E final projext
+Group E final project
