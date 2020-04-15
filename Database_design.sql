@@ -1,14 +1,19 @@
 create database class_arrangement;
 
 use class_arrangement;
-
+create table class_info(
+CourseNo varchar(50),
+Num_of_Day_to_meet int
+);
 create table class_Room(
 roomNum varchar(15) primary key
 );
 create table classes
 (
-  HoursperWeek int,
-  CourseNo  varchar(50) primary key
+ 
+  CourseNo  varchar(50) primary key,
+   HoursperWeek int
+ 
 );
 create table class_schedule
 (
@@ -22,12 +27,7 @@ create table class_schedule
   FOREIGN KEY (CourseNo) REFERENCES classes(CourseNo),
   FOREIGN KEY (Classroom) REFERENCES class_Room(roomNum)
 );
-create table class_info(
-CourseNo varchar(50),
-Num_of_Day_to_meet int,
-FOREIGN KEY (CourseNo) REFERENCES classes(CourseNo),
-FOREIGN KEY (CourseNo) REFERENCES class_schedule(CourseNo)
-);
+
 
 insert into   classes value("CSC101",'4');
 insert into   classes value("CSC110",'4');
@@ -45,7 +45,7 @@ insert into   classes value("CSC410",'4');
 insert into   classes value("CSC430",'4');
 insert into   classes value("CSC450",'4');
 insert into   classes value("CSC470",'5');
-insert into  classes value("CIS100",'4');
+insert into   classes value("CIS100",'4');
 insert into   classes value("CIS115",'4');
 insert into   classes value("CIS120",'3');
 insert into   classes value("CIS140",'3');
@@ -82,7 +82,6 @@ insert into   classes value("CIS480",'3');
 insert into   classes value("CIS485",'4');
 insert into   classes value("CIS490",'4');
 insert into   classes value("CIS495",'4');
-
 
 
 
