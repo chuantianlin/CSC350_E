@@ -23,7 +23,7 @@
   </form>
 
 <?php
-$conn = mysqli_connect("localhost", "root", "", "file");
+$conn = mysqli_connect("localhost", "root", "", "class_arrangement");
 
 
 if (isset($_POST["import"])) {
