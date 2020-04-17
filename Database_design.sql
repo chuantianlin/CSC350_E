@@ -1,31 +1,36 @@
 create database class_arrangement;
 
 use class_arrangement;
+
+create table class_Room(
+roomNum varchar(15) primary key
+);
+
 create table class_info(
 CourseNo varchar(50),
 Num_of_Day_to_meet int
-);
-create table class_Room(
-roomNum varchar(15) primary key
+
 );
 create table classes
 (
  
   CourseNo  varchar(50) primary key,
-   HoursperWeek int
+  HoursperWeek int
  
 );
 create table class_schedule
 (
-  MeetingID int primary key  AUTO_INCREMENT,
-  Section   varchar(10),
-  Classroom      varchar(15),
-  StartTime int,
-  EndTime   int,
+  MeetingID  int primary key  AUTO_INCREMENT,
+  Section    varchar(11),
+  Classroom  varchar(15),
+  StartTime time,
+  EndTime   time,
   The_Date  varchar(10), 
-  CourseNo     varchar(50),
+  CourseNo  varchar(50),
   FOREIGN KEY (CourseNo) REFERENCES classes(CourseNo),
   FOREIGN KEY (Classroom) REFERENCES class_Room(roomNum)
+ 
+ 
 );
 
 
