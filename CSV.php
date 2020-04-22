@@ -1,8 +1,6 @@
-
-
 <html>
 <head>
-<title>CVS READER</title>
+<title>csv READER</title>
 </head>
 <body>
   <form class="form-horizontal" action="" method="post" name="uploadCSV"
@@ -74,7 +72,7 @@ echo "YES";
 
         $SQL_A=
         "SELECT
-        classes.hoursperweek/Num_of_Day_to_meet,class_info.courseNo
+        classes.hoursperweek,class_info.courseNo,class_info.NUm_of_day_to_meet
         from classes
         join  class_info
         on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet>1";
@@ -82,7 +80,11 @@ echo "YES";
        $SQL_starttime="SELECT class_schedule.starttime from class_schedule";
        $C=mysqli_query($conn, $SQL_starttime);
        $flag=true;
+
+       //Create a date array
        $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
+
+       //store classroom Info
        $SQL_Classroom="SELECT * FROM class_room";
        $ROOM_NUM=mysqli_query($conn, $SQL_Classroom);
        $CLASSROOM=array();
@@ -104,60 +106,111 @@ echo "YES";
      // calculate minutes left
      $minutes = floor($seconds / 60);
      // remove those from seconds as well
-     $seconds -= $minutes * 60;
-     // return the time formatted HH:MM:SSdfa
+     $seconds =floor($seconds-$minutes * 60);
+     if($minutes==9||$minutes==19||$minutes==29||$minutes==39||$minutes==49||$minutes==59)
+     {
+       $minutes=$minutes+1;
+       if($minutes==60)
+       {
+         $minutes=0;
+         $hours+=1;
+       }
+       $seconds=0;
+     }
+
 return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).str_pad($seconds,2,"0",STR_PAD_LEFT);
  }
 
+
         $ROOM_INDEX=-1;
+        $index=0;
+        $Flag_2=true;
+        $odd=0;
         while($row = mysqli_fetch_array($result,MYSQLI_NUM))
       {
-
-        $index=0;
-
+        $time=0;
+        $time_index=0;
         $SQL_A = mysqli_fetch_array($A);
+        $Houraweek=$SQL_A[0];
 
-              if($flag){
+        if(!$Flag_2&&$odd%2!=0)
+        {$index=1;}
+        else
+        {
+          $index=0;
+        }
+
+        if($flag){
+                $flag_2=true;
                 $starttime=0;
                 $start=8;
-                $End=0;
-                $endtime=0;
-                $flag=False;
-               }
+                $End;
+                $E=array(1,2,3,4,5);
+                $endtime;
+                if($start==8&&$DATE[$index]=="MON"){$ROOM_INDEX++;}
+              }
 
-              $end=$start+$SQL_A[0];
-              $starttime=convertTime($start);
-              $endtime=convertTime($end);
-              if($start==8&&$index%2==0){$ROOM_INDEX++;}
-              if($end>=20){
-                $index=1;}
-                $section=$SQL_A[1]."-".$starttime;
-                echo $section;
-      do{
+    for($i=$row[0];$i>0;$i--)
+       {
+              if(!$flag)
+           {
+
+             $start=$E[$time]+1/6;
+
+           }
+        if($DATE[$index]=="WED"&&$start>=13&&$start<=16)
+         {
+             $start=16;
+         }
+        if($SQL_A[0]%$SQL_A[2]==0)
+        {$E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];
+         $time_index++;
+
+        }
+        else
+        {   if($Houraweek%$i!=0&&$i!=1)
+            {$duration=$Houraweek-$i;}
+            else
+            {
+              $duration=$Houraweek;
+            }
+            $End=$start+$duration;
+            $E[$time_index]=$End;
+            $time_index++;
+            $Houraweek=$Houraweek-$duration;
+
+        }
+
+        $starttime=convertTime($start);
+        $endtime=convertTime($End);
+        $section=$SQL_A[1]."-".$starttime;
 
           $SQL="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
           values('$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
+           if($index<6)
+           {$index+=2;}
+          $B = mysqli_query($conn, $SQL);
+          $time++;
 
+           if($End>20)
+           {
+                break;
+           }
+      }
 
-
-
-                  $index+=2;
-                  $B = mysqli_query($conn, $SQL);
-                  $row[0]--;
-
-         }while($row[0]>0);
-
-                   $start=$end+0.1;
-
-                   if($end>=20)
+                   $flag=False;
+                   if($End>20)
                    {
+
                      $flag=true;
+                     $Flag_2=false;
+                     $odd++;
 
                    }
-
 
     }
 }
 ?>
 </body>
 </html>
+
