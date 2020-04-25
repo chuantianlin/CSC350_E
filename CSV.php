@@ -117,7 +117,7 @@ echo "YES";
        $seconds=0;
      }
 
-return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEFT).":".str_pad($seconds,2,"0",STR_PAD_LEFT);
+return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).str_pad($seconds,2,"0",STR_PAD_LEFT);
  }
 
  function decimal($time)
@@ -132,6 +132,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEF
         $index=0;
         $Flag_2=true;
         $odd=0;
+        $second=0;
         while($row = mysqli_fetch_array($result,MYSQLI_NUM))
       {
 
@@ -148,9 +149,12 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEF
         if($flag){
             if($ROOM_INDEX==$Number_of_rooms-1)
             {
+
             $Flag_2=false;
             $index=6;
-            $ROOM_INDEX=0;
+            if($second!=1)
+            {$ROOM_INDEX=0;}
+            $second+=1;
             }
                 $starttime=0;
                 $start=8;
@@ -216,19 +220,27 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEF
                   {$index+=2;}
             mysqli_query($conn, $SQL_insert);
                $time++;
-           if($End>=19.5)//if the end time is later than 8pm then jump out the loop
+           if($End>=21.5)//if the end time is later than 8pm then jump out the loop
             {
                 break;
             }
       }
 
                    $flag=False;
-                   if($End>=19.5)
+                   if($End>=21.5)
                    {
                      $flag=true;
                      $odd++;
                      if($index==6)
-                     {$ROOM_INDEX++;}
+                     {$ROOM_INDEX++;
+                       if($ROOM_INDEX==$Number_of_rooms)
+                       {
+                         break;
+                       }
+
+                     }
+
+
                    }
     }
 }
@@ -239,3 +251,4 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEF
 ?>
 </body>
 </html>
+
