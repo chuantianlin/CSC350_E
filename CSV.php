@@ -3,7 +3,7 @@
 <title>csv READER</title>
 </head>
 <body>
-  <form class="form-horizontal" action="" method="post" name="uploadCSV"
+  <form class="form-horizontal" action="csv.php" method="post" name="uploadCSV"
       enctype="multipart/form-data">
       <div class="input-row">
           <label class="col-md-4 control-label">Choose CSV File</label> <input
@@ -14,7 +14,6 @@
                 </br>
               <button type="submit" name="import"
                   >Import</button>
-
           <br />
 
       </div>
@@ -67,19 +66,17 @@ echo "YES";
 
         }
       }
-      $SQL="SELECT NUm_of_day_to_meet from class_info where NUm_of_day_to_meet>1";
-      $result = mysqli_query($conn, $SQL);
 
+
+       $SQL="SELECT NUm_of_day_to_meet from class_info /*where NUm_of_day_to_meet>1*/ order by NUm_of_day_to_meet desc";
+       $result = mysqli_query($conn, $SQL);
         $SQL_A=
         "SELECT
         classes.hoursperweek,class_info.courseNo,class_info.NUm_of_day_to_meet
         from classes
         join  class_info
-        on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet>1";
+        on class_info.courseNO=classes.courseNO /*where NUm_of_day_to_meet>1*/ order by NUm_of_day_to_meet desc";
        $A = mysqli_query($conn, $SQL_A);
-       $SQL_starttime="SELECT class_schedule.starttime from class_schedule";
-       $C=mysqli_query($conn, $SQL_starttime);
-       $flag=true;
 
        //Create a date array
        $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
@@ -89,12 +86,14 @@ echo "YES";
        $ROOM_NUM=mysqli_query($conn, $SQL_Classroom);
        $CLASSROOM=array();
        $ROOM_INDEX=0;
+       $Number_of_rooms=0;
        while($ROOM= mysqli_fetch_array($ROOM_NUM,MYSQLI_NUM))
        {
             $CLASSROOM[$ROOM_INDEX]=$ROOM[0];
-
             $ROOM_INDEX++;
+            $Number_of_rooms++;
        }
+
       function convertTime($dec)
  {
      // start by converting to seconds
@@ -121,49 +120,78 @@ echo "YES";
 return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).str_pad($seconds,2,"0",STR_PAD_LEFT);
  }
 
+   function decimal($time)
+ {
 
+ $time=intval($time[0])*10+intval($time[1])+(intval($time[3])*10+intval($time[4]))/60;
+
+   return $time;
+ }
+        $flag=true;
         $ROOM_INDEX=-1;
         $index=0;
         $Flag_2=true;
         $odd=0;
         while($row = mysqli_fetch_array($result,MYSQLI_NUM))
       {
+
         $time=0;
         $time_index=0;
         $SQL_A = mysqli_fetch_array($A);
         $Houraweek=$SQL_A[0];
-
-        if(!$Flag_2&&$odd%2!=0)
-        {$index=1;}
-        else
-        {
+        if($Flag_2)
+        { if($odd%2!=0)
+          $index=1;
+          else
           $index=0;
-        }
-
+       }
         if($flag){
-                $flag_2=true;
+            if($ROOM_INDEX==$Number_of_rooms-1)
+            {
+            $Flag_2=false;
+            $index=6;
+            $ROOM_INDEX=0;
+            }
                 $starttime=0;
                 $start=8;
                 $End;
-                $E=array(1,2,3,4,5);
+                $E=array(0,0,0,0,0,0,0);
                 $endtime;
-                if($start==8&&$DATE[$index]=="MON"){$ROOM_INDEX++;}
+                if($start==8&&$DATE[$index]=="MON")
+                {
+                  $ROOM_INDEX++;
+                }
+
               }
 
     for($i=$row[0];$i>0;$i--)
        {
-              if(!$flag)
+         if($row[0]==1)
+         {
+           $time=$index;
+           $time_index=$index;
+         }
+              if(!$flag&&$DATE[$index]!="SUN")
            {
 
-             $start=$E[$time]+1/6;
+             $start=$E[$time]+1/6;/* update the start time of each classadd 1/6(it is 1/6 hour which is ten minuytes)*/
+          }
 
+
+
+
+          if($DATE[$index]=="WED"&&$start>=13&&$start<=16)
+           {
+               $start=16;// save for the club time (2PM-4PM)
            }
-        if($DATE[$index]=="WED"&&$start>=13&&$start<=16)
-         {
-             $start=16;
-         }
         if($SQL_A[0]%$SQL_A[2]==0)
-        {$E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];
+        {
+          if($DATE[$index]=="WED")
+           {
+              if($start+$SQL_A[0]/$SQL_A[2]>14)
+               $start=16;
+           }
+         $E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];
          $time_index++;
 
         }
@@ -181,36 +209,148 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
         }
 
-        $starttime=convertTime($start);
-        $endtime=convertTime($End);
-        $section=$SQL_A[1]."-".$starttime;
+          $starttime=convertTime($start);
+          $endtime=convertTime($End);
+          $section=$SQL_A[1]."-".$starttime;
 
-          $SQL="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
+          $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
           values('$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
-           if($index<6)
-           {$index+=2;}
-          $B = mysqli_query($conn, $SQL);
-          $time++;
+                if ($index<5)
+                  {$index+=2;}
+            mysqli_query($conn, $SQL_insert);
+               $time++;
 
-           if($End>20)
-           {
+               if($DATE[$index]=="SUN")
+             {
+
+                $start=$End+1/6;
+
+            }
+           if($End>=19.5)//if the end time is later than 8pm then jump out the loop
+            {
                 break;
-           }
+            }
+
       }
-
                    $flag=False;
-                   if($End>20)
+                   if($End>=19.5)
                    {
-
                      $flag=true;
-                     $Flag_2=false;
                      $odd++;
-
+                     if($index==6)
+                     {$ROOM_INDEX++;}
                    }
 
-    }
+          }
+
+          $SQL_Classroom="SELECT * FROM class_room";
+          $ROOM_NUM=mysqli_query($conn, $SQL_Classroom);
+          $CLASSROOM=array();
+          $ROOM_INDEX=0;
+          $Number_of_rooms=0;
+          while($ROOM= mysqli_fetch_array($ROOM_NUM,MYSQLI_NUM))
+          {
+               $CLASSROOM[$ROOM_INDEX]=$ROOM[0];
+               $ROOM_INDEX++;
+               $Number_of_rooms++;
+          }
+
+
+          $SQL_onedaysection="SELECT classroom, max(ENDTIME),the_date FROM class_schedule
+          where the_date in(select the_date from class_schedule) group by
+          the_date,classroom having max(ENDTIME)<173000";
+          $SQL_onedaysection=mysqli_query($conn, $SQL_onedaysection);
+          $index=0;
+          $size=0;
+          $E_OS=array("0");
+          $CLASSROOM_OS=array("0");
+          $DATE_OS=array("0");
+          while($ONEDAYSECTION= mysqli_fetch_array($SQL_onedaysection,MYSQLI_NUM))
+          {
+              $CLASSROOM_OS[$index]=$ONEDAYSECTION[0];
+              $E_OS[$index]=decimal($ONEDAYSECTION[1]);
+              $DATE_OS[$index]=$ONEDAYSECTION[2];
+              $index++;
+              $size++;
+
+
+          }
+
+
+  $SQL_A=
+  "SELECT
+  classes.hoursperweek,class_info.courseNo
+  from classes
+  join  class_info
+  on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet=1";
+  $A = mysqli_query($conn, $SQL_A);
+  $index=0;
+  $ROOM_INDEX=0;
+  $flag=true;
+  $time_index=0;
+  $CLASSROOM=array("F12","F13","F14","F12","F13","F14","F12","F13","F14");
+/*  while($row = mysqli_fetch_array($A,MYSQLI_NUM))
+  {
+
+    if($flag)
+            {
+             $start=$E_OS[$index];
+            }
+            if($DATE_OS[$index]=="WED")
+             {
+                if($End>14)
+                 $start=16;
+             }
+       $End=$start+$row[0];
+       $starttime=convertTime($start);
+       $endtime=convertTime($End);
+       $section=$row[1]."-".$starttime;
+       $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
+       values('$starttime','$endtime','$row[1]','$DATE_OS[$index]','$CLASSROOM_OS[$ROOM_INDEX]','$section')";
+        $B=mysqli_query($conn, $SQL_insert);
+       //if($B){echo "Wrong"; }
+       if(!$flag){$start=$End+1/6;}
+
+       if($time_index<$size-1)
+         {
+             if($time_index<9);
+          {
+              $CLASSROOM_OS[$ROOM_INDEX]=$CLASSROOM[$ROOM_INDEX];
+          }
+           $index++;
+           $ROOM_INDEX++;
+           $time_index++;
+
+       }
+       else
+        {
+          $index=6;
+          $DATE_OS[6]="SUN";
+          echo $DATE_OS[6];
+          if($flag)
+          {
+            $ROOM_INDEX=0;
+            $start=8;
+            $End=0;
+          }
+          $flag=false;
+
+       }
+       if(!$flag&&$End>17.5)
+       {
+          $start=8;
+         $ROOM_INDEX++;
+         if($ROOM_INDEX==$Number_of_rooms)
+          {break;}
+       }
+
+  }*/
 }
+
+
+
+
+
 ?>
 </body>
 </html>
-
