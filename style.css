@@ -1,19 +1,18 @@
 body{
   margin: auto;
+  width: 60%;
+  border: 3px solid black;
   padding: 10px;
-  border-left: solid;
-  border-right: solid;
-  border-bottom: solid;
-  background-color: #e0ebeb;
-  font-family: sans-serif;
+  background-color: #d9e8f0;
 }
+
 h1  {
   margin-top: 20px;
-  margin-left: 400px;
-  margin-right: 400px;
-  border: solid;
+  margin-left: 100px;
+  margin-right: 100px;
   text-align: center;
   text-shadow: 2px 2px;
+  color: #4c80cc;
 }
 .input-row{
   text-align: center;
@@ -21,30 +20,25 @@ h1  {
 }
 
 #fImput{
-  color: transparent;
   margin-left: 50px;
-  width: 87px;
-  border: solid red;
+  width: 200px;
   margin-bottom: 10px;
 }
 #sImput{
 
-  color: transparent;
   margin-left: 59px;
   margin-bottom: 10px;
-  border: solid green;
-  width: 87px;
+  width: 200px;
 
 }
 #b{
   margin-right: 12px;
   text-align: center;
   font-weight: bold;
-  border: solid blue;
 }
 .thisImg {
-  margin-left: 80px;
-  padding-left:80px;
+  margin-left: 50px;
+  padding-left:50px;
   position: absolute;
   top: -30px;
   left: 0px;

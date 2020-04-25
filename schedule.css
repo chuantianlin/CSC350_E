@@ -1,0 +1,29 @@
+table {
+  background-color: #F6FFF1;
+  margin: auto;
+  width: 80%;
+  border: 1px solid #grey;
+}
+tr{
+  border: solid #64A5BB;
+}
+th{
+  border: none;
+  height: 30px;
+}
+#weekdays {
+  border: 1px double #B2C8A6;
+  color: #4E4E4E;
+}
+.time{
+  background-color: #373737;
+  color: white;
+  font-weight: bold;
+  border: none;
+  text-transform: uppercase;
+}
+
+td {
+  border: solid #64A5BB;
+  padding: 12px;
+}
