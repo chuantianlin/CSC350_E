@@ -66,21 +66,19 @@ echo "YES";
 
         }
       }
-      $SQL="SELECT NUm_of_day_to_meet from class_info order by NUm_of_day_to_meet desc";
-      $result = mysqli_query($conn, $SQL);
 
+
+       $SQL="SELECT NUm_of_day_to_meet from class_info  order by NUm_of_day_to_meet desc";
+       $result = mysqli_query($conn, $SQL);
         $SQL_A=
         "SELECT
         classes.hoursperweek,class_info.courseNo,class_info.NUm_of_day_to_meet
         from classes
         join  class_info
-        on class_info.courseNO=classes.courseNO ";
+        on class_info.courseNO=classes.courseNO order by NUm_of_day_to_meet desc";
        $A = mysqli_query($conn, $SQL_A);
-       $SQL_starttime="SELECT class_schedule.starttime from class_schedule order by NUm_of_day_to_meet desc " ;
-       $C=mysqli_query($conn, $SQL_starttime);
-       $flag=true;
 
-       //Create a date arra
+       //Create a date array
        $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
 
        //store classroom Info
@@ -92,12 +90,10 @@ echo "YES";
        while($ROOM= mysqli_fetch_array($ROOM_NUM,MYSQLI_NUM))
        {
             $CLASSROOM[$ROOM_INDEX]=$ROOM[0];
-
             $ROOM_INDEX++;
             $Number_of_rooms++;
        }
-       echo $ROOM_INDEX;
-       echo $Number_of_rooms;
+
       function convertTime($dec)
  {
      // start by converting to seconds
@@ -121,9 +117,17 @@ echo "YES";
        $seconds=0;
      }
 
-return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).str_pad($seconds,2,"0",STR_PAD_LEFT);
+return str_pad($hours,2,"0",STR_PAD_LEFT).":".str_pad($minutes,2,"0",STR_PAD_LEFT).":".str_pad($seconds,2,"0",STR_PAD_LEFT);
  }
 
+ function decimal($time)
+ {
+   $temp;
+   $temp=($time%100000)/100/60;
+   $time=($time-$time%100000)/10000;
+   return ($time+$temp);
+ }
+        $flag=true;
         $ROOM_INDEX=-1;
         $index=0;
         $Flag_2=true;
@@ -137,26 +141,17 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
         $Houraweek=$SQL_A[0];
         if($Flag_2)
         { if($odd%2!=0)
-         {
           $index=1;
-         }
-        else
-         {
+          else
           $index=0;
-         }
        }
-
-
-
         if($flag){
             if($ROOM_INDEX==$Number_of_rooms-1)
             {
-
             $Flag_2=false;
             $index=6;
             $ROOM_INDEX=0;
             }
-                //$flag_2=true;
                 $starttime=0;
                 $start=8;
                 $End;
@@ -180,10 +175,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
            {
 
              $start=$E[$time]+1/6;/* update the start time of each classadd 1/6(it is 1/6 hour which is ten minuytes)*/
-          /*  {
-             if($row[0]==1)
-             $start=$End+1/6;
-           }*/
+
           }
           if($DATE[$index]=="WED"&&$start>=13&&$start<=16)
            {
@@ -218,15 +210,12 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
           $endtime=convertTime($End);
           $section=$SQL_A[1]."-".$starttime;
 
-          $SQL="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
+          $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
           values('$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
                 if ($index<5)
                   {$index+=2;}
-
-
-          $B = mysqli_query($conn, $SQL);
-          $time++;
-
+            mysqli_query($conn, $SQL_insert);
+               $time++;
            if($End>=19.5)//if the end time is later than 8pm then jump out the loop
             {
                 break;
@@ -241,10 +230,12 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
                      if($index==6)
                      {$ROOM_INDEX++;}
                    }
-
     }
 }
+
+
+
+
 ?>
 </body>
 </html>
-
