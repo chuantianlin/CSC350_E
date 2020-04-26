@@ -1,3 +1,5 @@
+
+
 <html>
 <head>
 <title>csv READER</title>
@@ -68,14 +70,14 @@ echo "YES";
       }
 
 
-       $SQL="SELECT NUm_of_day_to_meet from class_info /*where NUm_of_day_to_meet>1*/ order by NUm_of_day_to_meet desc";
+       $SQL="SELECT NUm_of_day_to_meet from class_info where NUm_of_day_to_meet>1 order by NUm_of_day_to_meet desc";
        $result = mysqli_query($conn, $SQL);
         $SQL_A=
         "SELECT
         classes.hoursperweek,class_info.courseNo,class_info.NUm_of_day_to_meet
         from classes
         join  class_info
-        on class_info.courseNO=classes.courseNO /*where NUm_of_day_to_meet>1*/ order by NUm_of_day_to_meet desc";
+        on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet>1 order by NUm_of_day_to_meet desc";
        $A = mysqli_query($conn, $SQL_A);
 
        //Create a date array
@@ -146,12 +148,12 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
           $index=0;
        }
         if($flag){
-            if($ROOM_INDEX==$Number_of_rooms-1)
+            /*if($ROOM_INDEX==$Number_of_rooms-1)
             {
             $Flag_2=false;
             $index=6;
             $ROOM_INDEX=0;
-            }
+          }*/
                 $starttime=0;
                 $start=8;
                 $End;
@@ -160,6 +162,10 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
                 if($start==8&&$DATE[$index]=="MON")
                 {
                   $ROOM_INDEX++;
+                  if($ROOM_INDEX==$Number_of_rooms)
+                  {
+                    break;
+                  }
                 }
 
               }
@@ -226,14 +232,14 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
                 $start=$End+1/6;
 
             }
-           if($End>=19.5)//if the end time is later than 8pm then jump out the loop
+           if($End>=17.5)//if the end time is later than 8pm then jump out the loop
             {
                 break;
             }
 
       }
                    $flag=False;
-                   if($End>=19.5)
+                   if($End>=17.5)
                    {
                      $flag=true;
                      $odd++;
@@ -243,39 +249,26 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
           }
 
-          $SQL_Classroom="SELECT * FROM class_room";
-          $ROOM_NUM=mysqli_query($conn, $SQL_Classroom);
-          $CLASSROOM=array();
-          $ROOM_INDEX=0;
-          $Number_of_rooms=0;
-          while($ROOM= mysqli_fetch_array($ROOM_NUM,MYSQLI_NUM))
-          {
-               $CLASSROOM[$ROOM_INDEX]=$ROOM[0];
-               $ROOM_INDEX++;
-               $Number_of_rooms++;
-          }
-
 
           $SQL_onedaysection="SELECT classroom, max(ENDTIME),the_date FROM class_schedule
           where the_date in(select the_date from class_schedule) group by
-          the_date,classroom having max(ENDTIME)<173000";
+          the_date,classroom having max(ENDTIME)<=180000";
           $SQL_onedaysection=mysqli_query($conn, $SQL_onedaysection);
           $index=0;
           $size=0;
-          $E_OS=array("0");
-          $CLASSROOM_OS=array("0");
-          $DATE_OS=array("0");
+          $E_OS=array();
+          $CLASSROOM_OS=array();
+          $DATE_OS=array();
           while($ONEDAYSECTION= mysqli_fetch_array($SQL_onedaysection,MYSQLI_NUM))
           {
               $CLASSROOM_OS[$index]=$ONEDAYSECTION[0];
               $E_OS[$index]=decimal($ONEDAYSECTION[1]);
               $DATE_OS[$index]=$ONEDAYSECTION[2];
+
               $index++;
               $size++;
 
-
           }
-
 
   $SQL_A=
   "SELECT
@@ -288,13 +281,16 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
   $ROOM_INDEX=0;
   $flag=true;
   $time_index=0;
-  $CLASSROOM=array("F12","F13","F14","F12","F13","F14","F12","F13","F14");
-/*  while($row = mysqli_fetch_array($A,MYSQLI_NUM))
+  $Flag_2=false;
+  while($row = mysqli_fetch_array($A,MYSQLI_NUM))
   {
 
-    if($flag)
+
+    if($size>=1||$Flag_2)
+        { if($flag)
             {
-             $start=$E_OS[$index];
+             $ROOM_INDEX=array_search($CLASSROOM_OS[$index],$CLASSROOM);
+             $start=$E_OS[$index]+1/6;
             }
             if($DATE_OS[$index]=="WED")
              {
@@ -306,34 +302,32 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
        $endtime=convertTime($End);
        $section=$row[1]."-".$starttime;
        $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
-       values('$starttime','$endtime','$row[1]','$DATE_OS[$index]','$CLASSROOM_OS[$ROOM_INDEX]','$section')";
+       values('$starttime','$endtime','$row[1]','$DATE_OS[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
         $B=mysqli_query($conn, $SQL_insert);
-       //if($B){echo "Wrong"; }
+        if(!$B){echo "Wrong"; }
+         }
+
        if(!$flag){$start=$End+1/6;}
 
        if($time_index<$size-1)
          {
-             if($time_index<9);
-          {
-              $CLASSROOM_OS[$ROOM_INDEX]=$CLASSROOM[$ROOM_INDEX];
-          }
-           $index++;
-           $ROOM_INDEX++;
-           $time_index++;
 
+           $index++;
+           $time_index++;
        }
        else
         {
           $index=6;
           $DATE_OS[6]="SUN";
-          echo $DATE_OS[6];
           if($flag)
           {
+            $Flag_2=True;
             $ROOM_INDEX=0;
             $start=8;
             $End=0;
           }
           $flag=false;
+
 
        }
        if(!$flag&&$End>17.5)
@@ -341,10 +335,20 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
           $start=8;
          $ROOM_INDEX++;
          if($ROOM_INDEX==$Number_of_rooms)
-          {break;}
+          {
+            echo "<script type='text/javascript'>alert('Schedules are too full');</script>";
+                        break;
+          }
        }
 
-  }*/
+       if($DATE_OS[6]=="SUN"&&$time_index>=$size-1)
+      {
+        if($start!=8)
+        $start=$End+1/6;
+
+      }
+
+  }
 }
 
 
