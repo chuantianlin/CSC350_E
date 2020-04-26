@@ -26,7 +26,7 @@
 $conn = mysqli_connect("localhost", "root", "", "class_arrangement");
 
 
-if (isset($_POST["import"])) {
+if (isset($_POST["import"])) {    /* import data from CSV file*/
 
 
     $fileName = $_FILES["file"]["tmp_name"];
@@ -67,9 +67,9 @@ echo "YES";
 
 
         }
-      }
+      }     //   all above is to import data from csv file
 
-
+       // get the course that meet more than one day  and save
        $SQL="SELECT NUm_of_day_to_meet from class_info where NUm_of_day_to_meet>1 order by NUm_of_day_to_meet desc";
        $result = mysqli_query($conn, $SQL);
         $SQL_A=
@@ -83,7 +83,7 @@ echo "YES";
        //Create a date array
        $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
 
-       //store classroom Info
+  //get the classroom information and use  mysqli_fetch_array functon to store it
        $SQL_Classroom="SELECT * FROM class_room";
        $ROOM_NUM=mysqli_query($conn, $SQL_Classroom);
        $CLASSROOM=array();
@@ -96,6 +96,8 @@ echo "YES";
             $Number_of_rooms++;
        }
 
+
+//convet decimal hour to time format(18.5-->183000)
       function convertTime($dec)
  {
      // start by converting to seconds
@@ -118,10 +120,10 @@ echo "YES";
        }
        $seconds=0;
      }
-
 return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).str_pad($seconds,2,"0",STR_PAD_LEFT);
  }
 
+// Covert time to decimal hour (183000-->18.5)
    function decimal($time)
  {
 
@@ -129,23 +131,27 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
    return $time;
  }
+
+
         $flag=true;
         $ROOM_INDEX=-1;
         $index=0;
         $Flag_2=true;
         $odd=0;
+
+    // arrange the class that meet more than one day
         while($row = mysqli_fetch_array($result,MYSQLI_NUM))
       {
 
         $time=0;
         $time_index=0;
-        $SQL_A = mysqli_fetch_array($A);
+        $SQL_A = mysqli_fetch_array($A);// to get each class's weekly hours
         $Houraweek=$SQL_A[0];
         if($Flag_2)
-        { if($odd%2!=0)
-          $index=1;
-          else
-          $index=0;
+        { if($odd%2!=0)//$odd is to alterate the date
+          $index=1; // The date index 1 means Tues,0 means Mon etc
+          else      // user required  to arrange class on Monday, wednesday
+          $index=0; // or Tuseday,Thurseday
        }
         if($flag){
             /*if($ROOM_INDEX==$Number_of_rooms-1)
@@ -154,34 +160,35 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
             $index=6;
             $ROOM_INDEX=0;
           }*/
-                $starttime=0;
-                $start=8;
-                $End;
-                $E=array(0,0,0,0,0,0,0);
-                $endtime;
-                if($start==8&&$DATE[$index]=="MON")
-                {
+                $starttime=0;//starttime in HHMMSS fomat
+                $start=8;//aussuming each day classes start at 8 am
+                $End;   // to store end time of each class on same date in deciaml hour format like 18.5
+                $E=array(0,0,0,0,0,0,0);//to store end time on different days
+                $endtime;//Endtime in HHMMSS fomat
+                if($start==8&&$DATE[$index]=="MON")//When the first classroom has aleady filled with weekly classes
+
+                {                                 //  then Change to anther room[Monday is the start date to arrange class]
                   $ROOM_INDEX++;
-                  if($ROOM_INDEX==$Number_of_rooms)
-                  {
+                  if($ROOM_INDEX==$Number_of_rooms) // When the Room that is avalible to arrange has been filled the
+                  {                                // classes. The program should be terminate.
                     break;
                   }
                 }
 
               }
 
-    for($i=$row[0];$i>0;$i--)
+    for($i=$row[0];$i>0;$i--)//row[0] store the Number of day of each class in a week
        {
          if($row[0]==1)
          {
            $time=$index;
            $time_index=$index;
          }
-              if(!$flag&&$DATE[$index]!="SUN")
-           {
+              if(!$flag)//if $flag is true which means it is the first class on each day
+           {           // therefor no need to run this statement
 
              $start=$E[$time]+1/6;/* update the start time of each classadd 1/6(it is 1/6 hour which is ten minuytes)*/
-          }
+          }                      //The next class's start time should be the end time of the class on the same classroom
 
 
 
@@ -197,19 +204,19 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
               if($start+$SQL_A[0]/$SQL_A[2]>14)
                $start=16;
            }
-         $E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];
+         $E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];// to arrange duration of each class on each day
          $time_index++;
 
-        }
+       }
         else
         {   if($Houraweek%$i!=0&&$i!=1)
             {$duration=$Houraweek-$i;}
             else
             {
-              $duration=$Houraweek;
+              $duration=$Houraweek;//to arrange duration of each class on each day
             }
-            $End=$start+$duration;
-            $E[$time_index]=$End;
+            $End=$start+$duration;  //if the class is 5 hours to 3 days it'll divided into 2 1 2
+            $E[$time_index]=$End;   //if divided into 2 days then 3 2
             $time_index++;
             $Houraweek=$Houraweek-$duration;
 
@@ -217,7 +224,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
           $starttime=convertTime($start);
           $endtime=convertTime($End);
-          $section=$SQL_A[1]."-".$starttime;
+          $section=$SQL_A[1]."-".$starttime;// Section (CSC-1200)
 
           $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
           values('$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
@@ -226,15 +233,15 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
             mysqli_query($conn, $SQL_insert);
                $time++;
 
-               if($DATE[$index]=="SUN")
+               /*if($DATE[$index]=="SUN")
              {
 
                 $start=$End+1/6;
 
-            }
-           if($End>=17.5)//if the end time is later than 8pm then jump out the loop
+            }*/
+           if($End>=17.5)//if the end time is later than 17.30pm then arrange classes on different day
             {
-                break;
+                break;  // one day sectio Will be arranged after this
             }
 
       }
@@ -249,107 +256,112 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
           }
 
+ /* IT IS  to arrange classes that only meet one day it is similar to the code above*/
+ /*reason why divide into two parts 1.It is easier to arrange class 2.One day section will be
+ distributed to every day. so  people have more choice 3. According to users' requirement,
+ one day section usually are arranged at evening class for some
+ people need to work and Sun day all day are assigned with one day section class */
+
 
           $SQL_onedaysection="SELECT classroom, max(ENDTIME),the_date FROM class_schedule
           where the_date in(select the_date from class_schedule) group by
           the_date,classroom having max(ENDTIME)<=180000";
           $SQL_onedaysection=mysqli_query($conn, $SQL_onedaysection);
-          $index=0;
           $size=0;
+          $timeindex=0;
           $E_OS=array();
           $CLASSROOM_OS=array();
           $DATE_OS=array();
           while($ONEDAYSECTION= mysqli_fetch_array($SQL_onedaysection,MYSQLI_NUM))
           {
-              $CLASSROOM_OS[$index]=$ONEDAYSECTION[0];
-              $E_OS[$index]=decimal($ONEDAYSECTION[1]);
-              $DATE_OS[$index]=$ONEDAYSECTION[2];
+              $CLASSROOM_OS[$timeindex]=$ONEDAYSECTION[0];
+              $E_OS[$timeindex]=decimal($ONEDAYSECTION[1]);
+              $DATE_OS[$timeindex]=$ONEDAYSECTION[2];
 
-              $index++;
+              $timeindex++;
               $size++;
 
           }
 
-  $SQL_A=
-  "SELECT
-  classes.hoursperweek,class_info.courseNo
-  from classes
-  join  class_info
-  on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet=1";
-  $A = mysqli_query($conn, $SQL_A);
-  $index=0;
-  $ROOM_INDEX=0;
-  $flag=true;
-  $time_index=0;
-  $Flag_2=false;
-  while($row = mysqli_fetch_array($A,MYSQLI_NUM))
-  {
-
-
-    if($size>=1||$Flag_2)
-        { if($flag)
-            {
-             $ROOM_INDEX=array_search($CLASSROOM_OS[$index],$CLASSROOM);
-             $start=$E_OS[$index]+1/6;
-            }
-            if($DATE_OS[$index]=="WED")
-             {
-                if($End>14)
-                 $start=16;
-             }
-       $End=$start+$row[0];
-       $starttime=convertTime($start);
-       $endtime=convertTime($End);
-       $section=$row[1]."-".$starttime;
-       $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
-       values('$starttime','$endtime','$row[1]','$DATE_OS[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
-        $B=mysqli_query($conn, $SQL_insert);
-        if(!$B){echo "Wrong"; }
-         }
-
-       if(!$flag){$start=$End+1/6;}
-
-       if($time_index<$size-1)
-         {
-
-           $index++;
-           $time_index++;
-       }
-       else
+        $SQL_A=
+        "SELECT
+        classes.hoursperweek,class_info.courseNo
+        from classes
+        join  class_info
+        on class_info.courseNO=classes.courseNO where NUm_of_day_to_meet=1";
+        $A = mysqli_query($conn, $SQL_A);
+        $index=0;
+        $ROOM_INDEX=0;
+        $flag=true;
+        $time_index=0;
+        $Flag_2=false;
+        $timeindex=0;
+        while($row = mysqli_fetch_array($A,MYSQLI_NUM))
         {
-          $index=6;
-          $DATE_OS[6]="SUN";
-          if($flag)
-          {
-            $Flag_2=True;
-            $ROOM_INDEX=0;
-            $start=8;
-            $End=0;
-          }
-          $flag=false;
 
 
-       }
-       if(!$flag&&$End>17.5)
-       {
-          $start=8;
-         $ROOM_INDEX++;
-         if($ROOM_INDEX==$Number_of_rooms)
-          {
-            echo "<script type='text/javascript'>alert('Schedules are too full');</script>";
-                        break;
-          }
-       }
+          if($size>=1||$Flag2)
+              { if($flag)
+                  {
+                   $ROOM_INDEX=array_search($CLASSROOM_OS[$time_index],$CLASSROOM);
+                   $start=$E_OS[$time_index]+1/6;
+                   $index=array_search($DATE_OS[$time_index],$DATE);
+                 }
+                  if($DATE[$index]=="WED")
+                   {
+                      if($End>14)
+                       $start=16;
+                   }
+             $End=$start+$row[0];
+             $starttime=convertTime($start);
+             $endtime=convertTime($End);
+             $section=$row[1]."-".$starttime;
+             $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
+             values('$starttime','$endtime','$row[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
+              $B=mysqli_query($conn, $SQL_insert);
+              if(!$B){echo "Wrong"; }
+               }
 
-       if($DATE_OS[6]=="SUN"&&$time_index>=$size-1)
-      {
-        if($start!=8)
-        $start=$End+1/6;
+             if(!$flag){$start=$End+1/6;}
+                $timeindex++;
+             if($timeindex<$size-1)
+               {
+                 $time_index++;
+               }
+             else
+              {
+                $index=6;
+                if($flag)
+                {
+                  $Flag_2=True;
+                  $ROOM_INDEX=0;
+                  $start=8;
+                  $End=0;
+                }
+                $flag=false;
 
+
+             }
+             if(!$flag&&$End>17.5)
+             {
+                $start=8;
+               $ROOM_INDEX++;
+               if($ROOM_INDEX==$Number_of_rooms)
+                {
+                  echo "<script type='text/javascript'>alert('Schedules are too full');</script>";
+                              break;
+                }
+             }
+
+             if(!$flag&&$time_index>=$size-1)
+            {
+              if($start!=8)
+              $start=$End+1/6;
+
+            }
+
+        }
       }
-
-  }
-}
 
 
 
@@ -358,3 +370,4 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 ?>
 </body>
 </html>
+
