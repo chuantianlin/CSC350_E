@@ -72,7 +72,57 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
 
       $myQ="Delete from class_schedule";
       $esult = mysqli_query($conn, $myQ);
-       // get the course that meet more than one day  and save
+
+
+     // varify the input
+      $index=0;
+      $size=0;
+      $VALID=true;
+      $COURSEINFO=array();
+      $SQL="SELECT * from class_Info";
+      $courseInfo = mysqli_query($conn, $SQL);
+    while($cInfo= mysqli_fetch_array($courseInfo,MYSQLI_NUM))
+      {
+         $COURSEINFO[$index]=$cInfo[0];
+        $index++;
+         if($cInfo[1]<=0)
+         {
+           $VALID=false;
+          echo "<script type='text/javascript'>alert('Invalid  number of days to meet on row $index');</script>";
+          break;
+
+         }
+
+         $size++;
+
+      }
+      $index=0;
+      $CisCourse=array();
+      $SQL="SELECT  COURSENO from classes";
+      $courseInfo = mysqli_query($conn, $SQL);
+      while($cInfo= mysqli_fetch_array($courseInfo,MYSQLI_NUM))
+      {
+         $CisCourse[$index]=$cInfo[0];
+          $index++;
+      }
+        $index=0;
+      while($VALID&&$index!=$size-1)
+      {
+        $VALID=in_array($COURSEINFO[$index],$CisCourse);
+        $index++;
+        if(!$VALID)
+        {
+          echo "<script type='text/javascript'>alert('No course number on row $index exists on CIS dep');</script>";
+
+           break;
+        }
+          $index++;
+
+       }
+      if($VALID)
+     {
+         echo "<script type='text/javascript'>alert('Submit succesfully!');</script>";
+       // get the course that meet more than one day  and save in array
        $SQL="SELECT NUm_of_day_to_meet from class_info where NUm_of_day_to_meet>1 order by courseno, NUm_of_day_to_meet desc";
        $result = mysqli_query($conn, $SQL);
         $SQL_A=
@@ -180,7 +230,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
               }
        $Coursetitle=$SQL_A[1];
-       $s+=1; echo" ".$s." ";
+       $s+=1;
     for($i=$row[0];$i>0;--$i)//row[0] store the Number of day of each class in a week
        {
 
@@ -330,7 +380,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
              if($start<10)
              $section=$row[1]."-"."0".($start*10).$s;
              else
-              $section=$row[1]."-".floor($start*10).$s;
+              $section=$row[1]."-".($start*10).$s;
              $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
              values('$starttime','$endtime','$row[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
               $B=mysqli_query($conn, $SQL_insert);
@@ -377,7 +427,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
             }
             $Sectiontemp=$row[1];
             $s++;
-            echo $s;
+
 
         }
 
@@ -457,9 +507,10 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
                   echo "<strong><p>CLASSROOM:</strong>".$ROOM[$index]."</br>" ;
                   echo "<strong><p>SECTION:</strong>".$section[$index]."</br>" ;
                   echo"<strong><p>TIME:</strong>".$starttime[$index]."--".$Endtime[$index]."</br>";
+                  echo "<hr>";
                   if($index==$size-1){break; }
                      $index++;
-                   echo "<hr>";
+
 
                  }
 
@@ -473,8 +524,12 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
             }
 
+            // closing connection
+           mysqli_close($conn);
 
 
+
+}
 }
 ?>
 </body>
