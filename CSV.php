@@ -380,7 +380,7 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
              if($start<10)
              $section=$row[1]."-"."0".($start*10).$s;
              else
-              $section=$row[1]."-".($start*10).$s;
+              $section=$row[1]."-".floor($start*10).$s;
              $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
              values('$starttime','$endtime','$row[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
               $B=mysqli_query($conn, $SQL_insert);
@@ -526,7 +526,6 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
             // closing connection
            mysqli_close($conn);
-
 
 
 }
