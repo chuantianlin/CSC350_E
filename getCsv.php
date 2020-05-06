@@ -1,5 +1,3 @@
-
-
 <html>
 <head>
 <title>CVS READER</title>
@@ -243,29 +241,35 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
 
           if($DATE[$index]=="WED")
            {
-              if($start+$SQL_A[0]/$SQL_A[2]>14)
+              if($start+$SQL_A[0]/$SQL_A[2]>14&&$start<16)
                $start=16;
            }
-        if($SQL_A[0]%$SQL_A[2]==0)
+
+          if($SQL_A[0]%$SQL_A[2]==0)
         {
 
          $E[$time_index]=$End=$start+$SQL_A[0]/$SQL_A[2];// to arrange duration of each class on each day
          $time_index++;
-
-       }
-        else
-        {   if($Houraweek%$i!=0&&$i!=1)
+         }
+        else{
+         if ($Houraweek%$i!=0&&$i!=1)
             {$duration=$Houraweek-$i;}
             else
             {
-              $duration=$Houraweek;//to arrange duration of each class on each day
+              $duration=$Houraweek;
+              if($Houraweek%$i==0&&$i!=1)//to arrange duration of each class on each day
+              {
+                $duration=$Houraweek/2;
+
+              }
             }
             $End=$start+$duration;  //if the class is 5 hours to 3 days it'll divided into 2 1 2
             $E[$time_index]=$End;   //if divided into 2 days then 3 2
             $time_index++;
             $Houraweek=$Houraweek-$duration;
+          }
 
-        }
+
 
           $starttime=convertTime($start);
           $endtime=convertTime($End);
@@ -282,8 +286,8 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
              $section=$SQL_A[1]."-"."0".($start*100+$s);
            }// Section (CSC-1200)
           if($i==1){$Sectiontemp=$SQL_A[1];}
-          $SQL_insert="INSERT into class_schedule(starttime,endtime,CourseNo,THE_DATE,classroom,Section)
-          values('$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
+          $SQL_insert="INSERT into class_schedule(meetingId,starttime,endtime,CourseNo,THE_DATE,classroom,Section)
+          values('0','$starttime','$endtime','$SQL_A[1]','$DATE[$index]','$CLASSROOM[$ROOM_INDEX]','$section')";
                 if ($index<5)
                   {$index+=2;}
             mysqli_query($conn, $SQL_insert);
@@ -369,12 +373,13 @@ return str_pad($hours,2,"0",STR_PAD_LEFT).str_pad($minutes,2,"0",STR_PAD_LEFT).s
                    $start=$E_OS[$time_index]+1/6;
                    $index=array_search($DATE_OS[$time_index],$DATE);
                  }
-                  if($DATE[$index]=="WED")
-                   {
-                      if($End>14&&$End<16)
-                       $start=16;
-                   }
+
              $End=$start+$row[0];
+             if($DATE[$index]=="WED")
+              {
+                 if($End>14&&$start<16)
+                  $start=16;
+              }
              $starttime=convertTime($start);
              $endtime=convertTime($End);
              if($start<10)
