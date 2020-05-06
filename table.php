@@ -27,7 +27,7 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
               $ROOM_INDEX++;
 
               }
-    echo   '</select>
+    echo  '</select>
     <input type="submit" name="submit" value="Get Selected Values" />
      </form>';
      echo'  <html>
@@ -95,17 +95,19 @@ if($size>0)
           echo '<tr onmouseover="changeColor(this)" onmouseout="restoreColor(this)">';
           for ($z=1; $z <= $col; $z++)
            {
+
               echo '<td id="weekdays">';
 
             while($The_Date[$index]==$DATE[$time_index])
             {
-
+              echo  "<span style='overflow: hidden; white-space: nowrap; text-overflow:ellipsis'>";
               echo "<strong><p>CLASSROOM:</strong>".$CLASSROOM[$ROOM_INDEX]."</br>" ;
               echo "<strong><p>SECTION:</strong>".$section[$index]."</br>" ;
               echo"<strong><p>TIME:</strong>".$starttime[$index]."--".$Endtime[$index]."</br>";
               echo "<hr>";
+              echo  "</span>";
               if($index==$size-1){break; }
-                 $index++;
+              if($The_Date[$index]==$DATE[$time_index])   $index++;
 
 
              }
