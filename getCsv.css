@@ -1,5 +1,44 @@
+html{
+  overflow-y: hidden;
+}
+.fa {
+  padding: 10px;
+ font-size: 20px;
+ width: 20px;
+ text-align: center;
+ text-decoration: none;
+ margin: 5px 2px;
+ border-radius: 50%;
+ bottom:0px;
+    }
+
+.fa-instagram {
+  background: #125688;
+  color: white;
+}
+.fa:hover {
+    opacity: 0.5;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+
+}
+
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+
 body{
-  margin: auto;
+  margin:0px;
   padding: 10px;
   background-color: #d9e8f0;
 
@@ -34,6 +73,7 @@ body{
   padding-left: 10px;
   text-align: center;
   font-size: 18px;
+
 }
 
 #bmcc{
@@ -42,20 +82,17 @@ body{
     position: absolute;
     top: 0px;
 }
-#gmail {
-  position: absolute;
-  right: 0;
-  margin-right: 100px;
 
-}
 input {
   font-size: 15px;
+
 }
 #fImput{
   margin-left: 50px;
   padding-left: 5px;
   width: 200px;
   margin-bottom: 10px;
+
 
 
 }
@@ -75,6 +112,7 @@ button{
   font-weight: bold;
   border: 1px solid #665544;
   font-size: 16px;
+  opacity: 0.5;
 }
 #submit:hover{
   background-color: #665544;
