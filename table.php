@@ -26,9 +26,9 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
       <a id="return" href="getCsv.php"><strong>Return to menu</strong></a>
       ';
 
-    echo' <form action="" method="post">';
-    echo'<select name=index>';
-    echo'<p><option>Choose Classroom No</option></div>';
+     echo'<form action="" method="post">';
+    echo'<select name=index required>';
+    echo"<p><option value=''>Choose an classroom No to check</option>";
            for($ROOM_INDEX=0;$i<$Number_of_rooms;$i++)
              {
 
