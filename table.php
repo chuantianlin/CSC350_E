@@ -54,7 +54,7 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
 
 
          $SQL="SELECT the_date,classroom,section,starttime,endtime FROM class_arrangement.class_schedule
-        where classroom='".$CLASSROOM[$ROOM_INDEX]."'order  by classroom,CASE
+        where classroom='".$CLASSROOM[$ROOM_INDEX]."' order  by classroom,CASE
 
         WHEN the_Date = 'Mon' THEN 0
         WHEN the_Date = 'Tue' THEN 1
@@ -64,7 +64,6 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
         WHEN the_Date = 'Sat' THEN 5
         WHEN the_Date = 'Sun' THEN 6
         END, starttime";
-        if(!$SQL) echo"Hi";
         $index=0;
         $size=0;
         $The_Date=array();
@@ -96,18 +95,20 @@ if($size>0)
           for ($z=1; $z <= $col; $z++)
            {
 
-              echo '<td id="weekdays">';
+        echo '<td id="weekdays">';
 
             while($The_Date[$index]==$DATE[$time_index])
             {
-              echo  "<span style='overflow: hidden; white-space: nowrap; text-overflow:ellipsis'>";
-              echo "<strong><p>CLASSROOM:</strong>".$CLASSROOM[$ROOM_INDEX]."</br>" ;
-              echo "<strong><p>SECTION:</strong>".$section[$index]."</br>" ;
-              echo"<strong><p>TIME:</strong>".$starttime[$index]."--".$Endtime[$index]."</br>";
+
+
+              echo "<p><strong>CLASSROOM:</strong>".$CLASSROOM[$ROOM_INDEX].'</br>'
+                 . "<p><strong>SECTION:</strong>".$section[$index].'</br>'.
+                   "<p><strong>TIME:</strong>".$starttime[$index]."--".$Endtime[$index]."</br>";
               echo "<hr>";
-              echo  "</span>";
-              if($index==$size-1){break; }
-              if($The_Date[$index]==$DATE[$time_index])   $index++;
+
+
+              if($index==$size-1){break;}
+              if($The_Date[$index]==$DATE[$time_index]) $index++;
 
 
              }
@@ -115,17 +116,19 @@ if($size>0)
              $time_index++;
 
                echo'</td>';
+
+
            }
 
           echo "</tr>";
+
 
     }
  else   echo "<script type='text/javascript'>alert('No classes are scheduled in this classroom');</script>";
         // closing connection
        mysqli_close($conn);
 }
-?>
-</body>
+echo '</body>
 </table>
  <script type="text/javascript">
  var mainColor = " #F6FFF1";
@@ -140,4 +143,5 @@ if($size>0)
  </script>
  </body>
 
-</html>
+</html>';
+?>
