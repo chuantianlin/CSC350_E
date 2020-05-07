@@ -1,3 +1,5 @@
+
+
 <html>
 <head>
 <title>CVS READER</title>
@@ -81,8 +83,10 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
       $courseInfo = mysqli_query($conn, $SQL);
     while($cInfo= mysqli_fetch_array($courseInfo,MYSQLI_NUM))
       {
+
          $COURSEINFO[$index]=$cInfo[0];
-        $index++;
+         $index++;
+         
          if($cInfo[1]<=0)
          {
            $VALID=false;
@@ -95,8 +99,7 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
 
       }
       $index=0;
-      $CisCourse=array();
-      $SQL="SELECT  COURSENO from classes";
+    $SQL="SELECT  COURSENO from classes";
       $courseInfo = mysqli_query($conn, $SQL);
       while($cInfo= mysqli_fetch_array($courseInfo,MYSQLI_NUM))
       {
@@ -104,7 +107,7 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
           $index++;
       }
         $index=0;
-      while($VALID&&$index!=$size-1)
+      while($VALID&&$index<$size-1)
       {
         $VALID=in_array($COURSEINFO[$index],$CisCourse);
         $index++;
@@ -117,6 +120,7 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
           $index++;
 
        }
+
       if($VALID)
      {
          echo "<script type='text/javascript'>alert('Submit succesfully!');</script>";
