@@ -1,28 +1,33 @@
-
-
 <html>
 <head>
 <title>CVS READER</title>
-<link rel="stylesheet" href="sample.css">
+<link rel="stylesheet" href="getCsv.css">
 </head>
 <body>
-<div class="intro">
-  <h1 id="firstWord">Schedule </h1>
-  <h1 id="secondWord">Program</h1>
-</div>
-<form class="form-horizontal" action="" method="post" name="uploadCSV"
-    enctype="multipart/form-data">
-    <div class="input-row">
-        <label class="inputTitle">Courses CSV File:</label>
-        <input type="file" name="file" id="fImput" accept=".csv">
-          </br>
-        <label class="inputTitle">Rooms CSV File:</label>
-        <input type="file" name="Rfile"  id="sImput" accept=".csv">
-              </br>
+
+  <div class="intro">
+    <h1 id="firstWord">Schedule </h1>
+    <h1 id="secondWord">Program</h1>
+
+    <img src="bmcc4.png" id="bmcc" height="250" width="250" alt="">
+  </div>
+  <address class="">
+    <a href="mailto:llcttt@gmail.com "><img src="icon.png" id="gmail" height="35" width="65" alt="gmail"></a>
+  </address>
+  <form class="form-horizontal" action="" method="post" name="uploadCSV"
+      enctype="multipart/form-data">
+      <div class="input-row">
+          <label class="inputTitle">Courses CSV File:</label>
+          <input type="file" name="file" id="fImput" accept=".csv">
+            </br>
+          <label class="inputTitle">Rooms CSV File:</label>
+          <input type="file" name="Rfile"  id="sImput" accept=".csv">
+                </br>
         <button id="submit" type="submit" name="import">Import</button>
-        <br />
-    </div>
-  </form>
+          <br />
+      </div>
+    </form>
+    <a id="GoToTable" href="table.php"><strong>Go To Table</strong></a>
 <?php
 
 include 'connection.php';
@@ -86,7 +91,7 @@ if (isset($_POST["import"])) {    /* import data from CSV file*/
 
          $COURSEINFO[$index]=$cInfo[0];
          $index++;
-         
+
          if($cInfo[1]<=0)
          {
            $VALID=false;

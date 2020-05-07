@@ -16,10 +16,19 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
           $ROOM_INDEX++;
           $Number_of_rooms++;
      }
+     echo '<html>
+      <head>
+        <title>Schedule</title>
+        <link rel="stylesheet" href="table.css">
+      </head>
+      <body>
+      <div class="ReturnToTable">
+      <a id="return" href="getCsv.php"><strong>Return to menu</strong></a>
+      ';
 
-    echo'<form action="" method="post">';
+    echo' <form action="" method="post">';
     echo'<select name=index>';
-    echo'<p><option>Choose an classroom No to check</option>';
+    echo'<p><option>Choose Classroom No</option></div>';
            for($ROOM_INDEX=0;$i<$Number_of_rooms;$i++)
              {
 
@@ -28,20 +37,14 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
 
               }
     echo  '</select>
-    <input type="submit" name="submit" value="Get Selected Values" />
+    <input type="submit" name="submit" value="Get Selected Values " />
      </form>';
-     echo'  <html>
-      <head>
-        <title>Schedule</title>
-        <link rel="stylesheet" href="sample.css">
-      </head>
-      <body>
-        <table border="">
-          <tr class="time">
+     echo' <table border="">
+          <tr class="weekdays">
             <th>Monday</th>
-            <th>Thusrday</th>
-            <th>Wenesaday</th>
-            <th>Thusrday</th>
+            <th>Tuesday</th>
+            <th>Wenesday</th>
+            <th>Thursday</th>
             <th>Friday</th>
             <th>Saturday</th>
             <th>Sunday</th>
@@ -91,19 +94,19 @@ $DATE=array("MON","TUE","WED","THUR","FRI","SAT","SUN");
     $time_index=0;
 if($size>0)
     {        $time_index=0;
-          echo '<tr onmouseover="changeColor(this)" onmouseout="restoreColor(this)">';
+          echo '<tr id="row"onmouseover="changeColor(this)" onmouseout="restoreColor(this)">';
           for ($z=1; $z <= $col; $z++)
            {
 
-        echo '<td id="weekdays">';
+        echo '<td id="schedule">';
 
             while($The_Date[$index]==$DATE[$time_index])
             {
 
 
-              echo "<p><strong>CLASSROOM:</strong>".$CLASSROOM[$ROOM_INDEX].'</br>'
-                 . "<p><strong>SECTION:</strong>".$section[$index].'</br>'.
-                   "<p><strong>TIME:</strong>".$starttime[$index]."--".$Endtime[$index]."</br>";
+              echo "<strong><p>CLASSROOM:</strong>".$CLASSROOM[$ROOM_INDEX].'</br>'
+                 . "<strong><p>SECTION:</strong><br>".$section[$index].'</br>'.
+                   "<strong><p>TIME:</strong><br>".$starttime[$index]."--".$Endtime[$index]."</br>";
               echo "<hr>";
 
 
@@ -128,20 +131,8 @@ if($size>0)
         // closing connection
        mysqli_close($conn);
 }
-echo '</body>
+echo '
 </table>
- <script type="text/javascript">
- var mainColor = " #F6FFF1";
- var thatColor = "#D4EFC4";
- var thisColor = "red";
- function changeColor(row){
-   row.style.backgroundColor = thatColor;
- }
- function restoreColor(row) {
-   row.style.backgroundColor = mainColor;
- }
- </script>
  </body>
-
 </html>';
 ?>

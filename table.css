@@ -1,0 +1,59 @@
+body{
+  margin: auto;
+  padding: 10px;
+  background-color: #d9e8f0;
+}
+.ReturnToTable {
+  margin-top: 40px;
+}
+#return {
+  padding: 8px;
+  border-radius: 25px;
+  background-color: #60A115;
+  color: bold #000000;
+  text-decoration: none;
+}
+select{
+  margin-top: 45px;
+  margin-bottom: 15px;
+  margin-left: 35%;
+  font-size: 18px;
+
+}
+input{
+  font-size: 18px;
+}
+table {
+  background-color: #D4EFC4;
+  margin-top: 25px;
+  margin: auto;
+  width: 100%;
+  border-collapse: collapse;
+  empty-cells: hide;
+}
+tr{
+  border: solid #64A5BB; // table border
+}
+th{
+  border: none;
+  height: 30px;
+}
+#row {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border: 1px double #B2C8A6;
+}
+.weekdays{
+  background-color: #373737;
+  color: white;
+  font-family: cursive;
+  border: none;
+  text-transform: uppercase;
+}
+td {
+  border: solid #64A5BB ;
+  padding: 12px;
+  border: 1px solid;
+)
