@@ -1,22 +1,27 @@
+
 body{
   margin: auto;
   padding: 10px;
   background-color: #d9e8f0;
 }
+hr{
+  border-top: 8px solid #bbb;
+  border-radius: 10px;
+}
+
 .ReturnToTable {
   margin-top: 40px;
 }
+
 #return {
-  padding: 8px;
-  border-radius: 25px;
-  background-color: #60A115;
+  padding: 8px;  background-color: #60A115;
   color: bold #000000;
   text-decoration: none;
 }
 select{
-  margin-top: 45px;
+  margin-top: -70px;
   margin-bottom: 15px;
-  margin-left: 35%;
+  margin-left: 0;
   font-size: 18px;
 
 }
@@ -27,16 +32,20 @@ table {
   background-color: #D4EFC4;
   margin-top: 25px;
   margin: auto;
-  width: 100%;
+  width: 80%;
   border-collapse: collapse;
   empty-cells: hide;
+
+
 }
+
 tr{
   border: solid #64A5BB; // table border
 }
 th{
   border: none;
   height: 30px;
+
 }
 #row {
   margin-top: 0px;
@@ -44,6 +53,20 @@ th{
   padding-top: 0px;
   padding-bottom: 0px;
   border: 1px double #B2C8A6;
+
+}
+.arrow{
+  margin-top:-50px;
+  padding: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .weekdays{
   background-color: #373737;
@@ -55,7 +78,10 @@ th{
 td {
   border: solid #64A5BB ;
   padding: 12px;
-  border: 1px solid;
+  border: 1.5px solid;
+  text-align: center;
   display: table-cell;
- vertical-align: top;
+  vertical-align: top;
+  font-family:'Cantarell';
+
 )
