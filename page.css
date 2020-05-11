@@ -1,0 +1,197 @@
+
+.fa {
+  padding: 10px;
+ font-size: 20px;
+ width: 20px;
+ text-align: center;
+ text-decoration: none;
+ margin: 5px 2px;
+ border-radius: 50%;
+
+    }
+
+.fa-instagram {
+  background: #125688;
+  color: white;
+}
+.fa:hover {
+    opacity: 0.5;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+
+}
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: red;
+   color: white;
+   text-align: center;
+}
+
+
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+
+}
+
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+spain.a {
+
+  font-family: "Sofia";
+  font-size: 20px;
+
+}
+.arrow{
+  margin-top:-50px;
+  padding: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+p.imggif
+{
+  margin-left: 300px;
+}
+body{
+  margin:0px;
+  padding: 10px;
+  background-color: #d9e8f0;
+
+}
+
+#firstWord  {
+  margin-top: 20px;
+  margin-left: 350px;
+  margin-right: 100px;
+  padding-left: 80px;
+  color: #AC3EAc;
+  font-family: Georgia, Times, serif;
+
+}
+
+#secondWord {
+  margin-top: 20px;
+  margin-left: 150px;
+  margin-right: 100px;
+  padding-left: 10px;
+  text-align: center;
+  color:  #1AADEA;
+  font-family: Georgia, Times, serif;
+}
+.intro {
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  padding-top: 20px;
+
+
+}
+.input-row{
+  margin-left: 15px;
+  padding-left: 10px;
+  text-align: center;
+  font-size: 18px;
+
+}
+
+#bmcc{
+    margin-left: 25px;
+    padding-left:25px;
+    position: absolute;
+    top: 0px;
+
+}
+
+input {
+  font-size: 15px;
+
+}
+#fImput{
+  margin-left: 50px;
+  width: 200px;
+  margin-bottom: 10px;
+
+  border:0.5px solid ;
+  border-style: inset;
+
+
+
+
+}
+#sImput{
+    margin-left: 50px;
+  width: 200px;
+
+  margin-bottom: 10px;
+  border:0.5px solid;
+
+border-style: inset;
+
+}
+
+
+button{
+  margin-top: 25px;
+  text-align:center;
+  margin-left: 30%;
+  margin-bottom: 30px;
+  padding: 6px 12px 6px 10px;
+  font-weight: bold;
+  border: 3px solid ;
+  font-size: 16px;
+  opacity: 0.5;
+  display: block;
+  width: 38%;
+  font-size:20px;
+  color:mintcream;
+  background-color: #4CAF50;
+  border-style: outset;
+}
+.intro{
+margin-left:30%;
+
+padding-bottom: 50px;
+padding-right:-800px ;
+border: 15px solid grey ;
+border-spacing:10px;
+border-bottom-right-radius: 30%;
+border-top-left-radius: 30%;
+position:relative;
+float: right;
+border-collapse: separate;
+border-spacing: 150px 50px;
+border-style:inset;
+
+
+}
+
+.button {
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
