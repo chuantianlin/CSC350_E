@@ -1,0 +1,86 @@
+body,h1 {font-family: monospace}
+@keyframes example {
+  from {background-color:#d9e8f0}
+  to {background-color: #d9e8f0}
+
+}
+body{
+  background-color: #d9e8f0;
+  animation-name: example;
+  animation-duration: 4s;
+}
+img {
+  float: left;
+  cursor: pointer;
+}
+
+@keyframes ex {
+  0%   {background-color:#d9e8f0; top:0px;}
+ 25%  {background-color:#d9e8f0; top:80px;}
+}
+.intro {
+  margin-top: 5%;
+  margin-left: 25%;
+  margin-right: 20%;
+  background-color: #d9e8f0;
+  position: relative;
+  animation-name: ex;
+  animation-duration: 4s;
+
+}
+h1{
+  margin-left: 26%;
+}
+.social{
+  margin-left: 80%;
+}
+#gmail {
+  margin-right: 10px;
+}
+.row {
+  content: " ";
+  clear: both;
+  margin-left: 16%;
+  top: 0;
+  margin-top: 7%
+}
+.col{
+  float: left;
+  width: 28%;
+  padding: 5px;
+}
+.zoom {
+   transition: transform .2s;
+}
+.zoom:hover {
+  transform: scale(1.1);
+}
+.button {
+ margin-top: 35px;
+ margin-left: 15px;
+ background-color: #01A4A8;
+ border: none;
+ color: black;
+ padding: 15px 32px;
+ text-align: center;
+ text-decoration: none;
+ display: inline-block;
+ font-size: 16px;
+ transition-duration: 0.2s;
+ cursor: pointer;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.button:hover{
+  background-color: #688493;
+  color: white;
+}
+#leftButton2{
+  margin-left: 15%;
+}
+#leftButton3{
+  margin-left: 17%;
+}
+.link{
+  text-decoration: none;
+  color: black;
+}
